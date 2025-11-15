@@ -91,43 +91,42 @@ export class Level1Scene extends Phaser.Scene {
     }
 
     createPlayer() {
-        // Obtener posición inicial del jugador
-        const playerX = level1SceneConfig.player.initialPosition.x || playerConfig.defaultPosition.x;
-        const playerY = level1SceneConfig.player.initialPosition.y || playerConfig.defaultPosition.y;
+      // Usar la configuración del nivel para la posición inicial
+        const { startPos } = levelConfig;
 
-        // Crear el sprite del jugador
-        this.jugador = this.physics.add.sprite(playerX, playerY, playerConfig.sprite.key)
-            .setOrigin(playerConfig.origin.x, playerConfig.origin.y)
-            .setCollideWorldBounds(playerConfig.collideWorldBounds)
-            .setScale(playerConfig.scale);
+        // Crear el sprite del jugador (igual que en Level1Scene)
+        this.jugador = this.physics.add.sprite(startPos.x, startPos.y, playerConfig.sprite.key)
+            .setOrigin(playerConfig.origin?.x ?? 0.5, playerConfig.origin?.y ?? 0.5)
+            .setCollideWorldBounds(playerConfig.collideWorldBounds ?? true)
+            .setScale(playerConfig.scale ?? 1);
 
-        // Configurar el cuerpo del jugador MÁS PEQUEÑO para evitar quedar atrapado
-        // Puedes ajustar estos valores según el tamaño de tu sprite
-        this.jugador.body.setSize(
-            this.jugador.width * 0.5,  // 50% del ancho
-            this.jugador.height * 0.5   // 50% del alto
-        );
+        // Ajustar el tamaño del cuerpo para evitar que se quede atrapado
+        if (this.jugador.body && this.jugador.width && this.jugador.height) {
+            this.jugador.body.setSize(
+                this.jugador.width * 0.5,
+                this.jugador.height * 0.5
+            );
+            this.jugador.body.setOffset(
+                this.jugador.width * 0.25,
+                this.jugador.height * 0.25
+            );
+        }
+
+        // Sonido de pasos
+        this.sonidoPasos = this.sound.add(playerConfig.sound.key, playerConfig.sound.config);
         
-        // Centrar el cuerpo de colisión en el sprite
-        this.jugador.body.setOffset(
-            this.jugador.width * 0.25,  // Offset horizontal
-            this.jugador.height * 0.25   // Offset vertical
-        );
-
-        // Configurar el sonido de pasos
-        this.sonidoPasos = this.sound.add(
-            playerConfig.sound.key,
-            playerConfig.sound.config
-        );
-//! ELIMINAR ESTO DE AQUI
-        // if (this.jugador.body) {
-        //     const b = this.jugador.body;
-        //     this.playerHitbox.fillStyle(0xffff00, 0.12);
-        //     this.playerHitbox.fillRect(b.x, b.y, b.width, b.height);
-        //     this.playerHitbox.lineStyle(2, 0xffff00, 0.9);
-        //     this.playerHitbox.strokeRect(b.x, b.y, b.width, b.height);
-        // }
-//! ELIMINAR  HASTA ACA
+        //!eliminar -------------------------------------
+        // Gráfico para visualizar la hitbox del jugador
+        this.playerHitbox = this.add.graphics();
+        this.playerHitbox.setDepth(10);
+        if (this.jugador.body) {
+            const b = this.jugador.body;
+            this.playerHitbox.fillStyle(0xffff00, 0.12);
+            this.playerHitbox.fillRect(b.x, b.y, b.width, b.height);
+            this.playerHitbox.lineStyle(2, 0xffff00, 0.9);
+            this.playerHitbox.strokeRect(b.x, b.y, b.width, b.height);
+        }
+        //!eliminar -----------------------------------------
     }
 
     createAnimations() {
