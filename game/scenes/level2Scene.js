@@ -92,7 +92,8 @@ export class Level2Scene extends Phaser.Scene {
 
         // Sonido de pasos
         this.sonidoPasos = this.sound.add(playerConfig.sound.key, playerConfig.sound.config);
-
+        
+        //!eliminar -------------------------------------
         // Gráfico para visualizar la hitbox del jugador
         this.playerHitbox = this.add.graphics();
         this.playerHitbox.setDepth(10);
@@ -103,6 +104,7 @@ export class Level2Scene extends Phaser.Scene {
             this.playerHitbox.lineStyle(2, 0xffff00, 0.9);
             this.playerHitbox.strokeRect(b.x, b.y, b.width, b.height);
         }
+        //!eliminar -----------------------------------------
     }
 
     createAnimations() {
