@@ -69,17 +69,33 @@ export class Level2Scene extends Phaser.Scene {
     }
 
     createPlayer() {
-        // const { startPos } = levelConfig;
-        // this.jugador = this.add.circle(startPos.x, startPos.y, 15, 0x3498db);
-        // this.physics.add.existing(this.jugador);
-        // this.jugador.body.setCollideWorldBounds(true);
-        // this.sonidoPasos = this.sound.add(playerConfig.sound.key, playerConfig.sound.config);
-        // // Gráfico para visualizar la hitbox del jugador
-        // this.playerHitbox = this.add.graphics();
-        // this.playerHitbox.setDepth(10);
+        // Usar la configuración del nivel para la posición inicial
+        const { startPos } = levelConfig;
 
+        // Crear el sprite del jugador (igual que en Level1Scene)
+        this.jugador = this.physics.add.sprite(startPos.x, startPos.y, playerConfig.sprite.key)
+            .setOrigin(playerConfig.origin?.x ?? 0.5, playerConfig.origin?.y ?? 0.5)
+            .setCollideWorldBounds(playerConfig.collideWorldBounds ?? true)
+            .setScale(playerConfig.scale ?? 1);
 
+        // Ajustar el tamaño del cuerpo para evitar que se quede atrapado
+        if (this.jugador.body && this.jugador.width && this.jugador.height) {
+            this.jugador.body.setSize(
+                this.jugador.width * 0.5,
+                this.jugador.height * 0.5
+            );
+            this.jugador.body.setOffset(
+                this.jugador.width * 0.25,
+                this.jugador.height * 0.25
+            );
+        }
 
+        // Sonido de pasos
+        this.sonidoPasos = this.sound.add(playerConfig.sound.key, playerConfig.sound.config);
+
+        // Gráfico para visualizar la hitbox del jugador
+        this.playerHitbox = this.add.graphics();
+        this.playerHitbox.setDepth(10);
         if (this.jugador.body) {
             const b = this.jugador.body;
             this.playerHitbox.fillStyle(0xffff00, 0.12);
