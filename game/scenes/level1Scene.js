@@ -1,6 +1,6 @@
 import { palabra } from '../../Control-de-voz.js';
 import { level1SceneConfig } from '../config/level1Scene.config.js';
-import { mazesConfig, levelConfig } from '../config/mazes.config.js';
+import { mazesConfig, levelConfig , buildMaze} from '../config/mazes.config.js';
 import { playerConfig, playerMovement } from '../config/player.config.js';
 
 export class Level1Scene extends Phaser.Scene {
@@ -19,33 +19,35 @@ export class Level1Scene extends Phaser.Scene {
             playerConfig.sound.key,
             playerConfig.sound.path
         );
+
+        this.load.image('hospitalWall', './Assets/Background/Tile_07.png');
     }
 
     create() {
         // Inicializar flag de nivel completado
         this.levelCompleted = false;
-        
+
         // Fondo del nivel
         this.cameras.main.setBackgroundColor('#8b7355');
-        
+
         // Crear grupo de paredes
         this.walls = this.physics.add.staticGroup();
-        
-        // Construir laberinto
-        this.buildMaze();
-        
+
+        // Construir laberinto usando la función reutilizable importada
+        buildMaze(this, 'hospitalWall');
+
         // Crear jugador
         this.createPlayer();
-        
+
         // Crear animaciones
         this.createAnimations();
-        
+
         // Crear enemigos
         this.createEnemies();
-        
+
         // Crear controles
         this.createControls();
-        
+
         // Texto del nivel
         this.levelText = this.add.text(16, 16, `Nivel: ${this.level}`, {
             fontSize: '24px',
@@ -59,39 +61,21 @@ export class Level1Scene extends Phaser.Scene {
             this.physics.add.collider(enemy, this.walls);
             this.physics.add.overlap(this.jugador, enemy, this.hitEnemy, null, this);
         });
-        
+
         // Verificar que la meta exista antes de agregar overlap
         if (this.goal) {
             this.physics.add.overlap(this.jugador, this.goal, this.reachGoal, null, this);
         }
+
+        // this.buildMaze(hospitalWall);
     }
 
-    buildMaze() {
-        const maze = mazesConfig[this.level];
-        const { tileSize } = levelConfig;
+    // (Removed local commented buildMaze implementation — using shared function from config.)
 
-        for (let row = 0; row < maze.length; row++) {
-            for (let col = 0; col < maze[row].length; col++) {
-                const x = col * tileSize + tileSize / 2;
-                const y = row * tileSize + tileSize / 2;
-
-                if (maze[row][col] === 1) {
-                    // Pared - crear y agregar al grupo de una sola vez
-                    const wall = this.add.rectangle(x, y, tileSize, tileSize, 0x34495e);
-                    this.walls.add(wall);
-                    // Refrescar el cuerpo después de agregar al grupo
-                    wall.body.updateFromGameObject();
-                } else if (maze[row][col] === 2) {
-                    // Meta
-                    this.goal = this.add.circle(x, y, 20, 0x2ecc71);
-                    this.physics.add.existing(this.goal, true);
-                }
-            }
-        }
-    }
+    
 
     createPlayer() {
-      // Usar la configuración del nivel para la posición inicial
+        // Usar la configuración del nivel para la posición inicial
         const { startPos } = levelConfig;
 
         // Crear el sprite del jugador (igual que en Level1Scene)
@@ -114,7 +98,7 @@ export class Level1Scene extends Phaser.Scene {
 
         // Sonido de pasos
         this.sonidoPasos = this.sound.add(playerConfig.sound.key, playerConfig.sound.config);
-        
+
         //!eliminar -------------------------------------
         // Gráfico para visualizar la hitbox del jugador
         this.playerHitbox = this.add.graphics();
@@ -210,15 +194,15 @@ export class Level1Scene extends Phaser.Scene {
         }).setOrigin(0.5).setScrollFactor(0);
 
         button.setInteractive({ useHandCursor: true });
-        
+
         button.on('pointerover', () => {
             button.setStyle({ backgroundColor: '#2980b9' });
         });
-        
+
         button.on('pointerout', () => {
             button.setStyle({ backgroundColor: '#3498db' });
         });
-        
+
         button.on('pointerdown', () => {
             this.isResetting = false;
             text.destroy();
@@ -239,10 +223,10 @@ export class Level1Scene extends Phaser.Scene {
     reachGoal(jugador, goal) {
         if (!this.levelCompleted) {
             this.levelCompleted = true;
-            
+
             // Detener al jugador
             jugador.body.setVelocity(0, 0);
-            
+
             // Mostrar mensaje de éxito
             const text = this.add.text(400, 300, '¡Nivel Completado!', {
                 fontSize: '32px',
@@ -259,7 +243,7 @@ export class Level1Scene extends Phaser.Scene {
 
     update() {
 
-         if (palabra === 'siguiente' && !this.levelCompleted) {
+        if (palabra === 'siguiente' && !this.levelCompleted) {
             this.levelCompleted = true;
             this.time.delayedCall(150, () => {
                 this.scene.start('Level3Scene');
@@ -267,7 +251,7 @@ export class Level1Scene extends Phaser.Scene {
             return;
         }
         //!ELININAR----------------------------------------------------------
-         // Actualizar la máscara/hitbox visual para que siga al jugador
+        // Actualizar la máscara/hitbox visual para que siga al jugador
         if (this.playerHitbox && this.jugador && this.jugador.body) {
             const b = this.jugador.body;
             this.playerHitbox.clear();
