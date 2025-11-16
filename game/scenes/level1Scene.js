@@ -161,8 +161,9 @@ export class Level1Scene extends Phaser.Scene {
 
         // Crear texto de game over
         const text = this.add.text(400, 250, '¡Te atraparon!', {
-            fontSize: '32px',
-            fill: '#e74c3c',
+            fontSize: '40px',
+            fill: '#9d2b1fff',
+            backgroundColor: '#000000',
             fontStyle: 'bold'
         }).setOrigin(0.5).setScrollFactor(0);
 
@@ -173,7 +174,7 @@ export class Level1Scene extends Phaser.Scene {
             fontStyle: 'bold',
             backgroundColor: '#3498db',
             padding: { x: 20, y: 10 }
-        }).setOrigin(0.5).setScrollFactor(0);
+        }).setOrigin(0.5).setScrollFactor(2);
 
         button.setInteractive({ useHandCursor: true });
 
@@ -228,7 +229,7 @@ export class Level1Scene extends Phaser.Scene {
         if (palabra === 'siguiente' && !this.levelCompleted || this.keys.space.isDown ) {
             this.levelCompleted = true;
             this.time.delayedCall(150, () => {
-                this.scene.start('Level3Scene');
+                this.scene.start('Level2Scene');
             });
             return;
         }

@@ -1,6 +1,6 @@
 import { palabra } from '../../Control-de-voz.js';
 import { mazesConfig, levelConfig, buildMaze } from '../config/mazes.config.js';
-import { playerConfig , playerMovement} from '../config/player.config.js';
+import { playerConfig, playerMovement } from '../config/player.config.js';
 
 export class Level2Scene extends Phaser.Scene {
     constructor() {
@@ -72,7 +72,7 @@ export class Level2Scene extends Phaser.Scene {
 
         // Sonido de pasos
         this.sonidoPasos = this.sound.add(playerConfig.sound.key, playerConfig.sound.config);
-        
+
         // //!eliminar -------------------------------------
         // // Gráfico para visualizar la hitbox del jugador
         // this.playerHitbox = this.add.graphics();
@@ -157,7 +157,7 @@ export class Level2Scene extends Phaser.Scene {
             });
             return;
         }
-        
+
         // Llamar la función pasando la escena y opcionalmente la palabra
         playerMovement(this, palabra);
 
@@ -170,7 +170,7 @@ export class Level2Scene extends Phaser.Scene {
         //     this.playerHitbox.lineStyle(2, 0xffff00, 0.9);
         //     this.playerHitbox.strokeRect(b.x, b.y, b.width, b.height);
         // }
-        
+
         this.enemies.forEach(enemy => {
             const angle = Phaser.Math.Angle.Between(enemy.x, enemy.y, this.jugador.x, this.jugador.y);
             enemy.body.setVelocity(Math.cos(angle) * enemy.speed, Math.sin(angle) * enemy.speed);
@@ -184,14 +184,47 @@ export class Level2Scene extends Phaser.Scene {
         jugador.y = startPos.y;
         jugador.body.setVelocity(0, 0);
 
-        const text = this.add.text(400, 300, '¡Te atraparon!', {
-            fontSize: '32px',
-            fill: '#e74c3c',
+        // Crear texto de game over
+        const text = this.add.text(400, 250, '¡Te atraparon!', {
+            fontSize: '40px',
+            fill: '#9d2b1fff',
+            backgroundColor: '#000000',
             fontStyle: 'bold'
-        }).setOrigin(0.5);
+        }).setOrigin(0.5).setScrollFactor(0);
 
-        this.time.delayedCall(1000, () => {
+        // Crear botón de reinicio (correctamente como texto interactivo)
+        const button = this.add.text(400, 320, '¡Ir a inicio!', {
+            fontSize: '28px',
+            fill: '#ffffff',
+            fontStyle: 'bold',
+            backgroundColor: '#3498db',
+            padding: { x: 20, y: 10 }
+        }).setOrigin(0.5).setScrollFactor(2);
+
+        button.setInteractive({ useHandCursor: true });
+
+        button.on('pointerover', () => {
+            button.setStyle({ backgroundColor: '#2980b9' });
+        });
+
+        button.on('pointerout', () => {
+            button.setStyle({ backgroundColor: '#3498db' });
+        });
+
+        button.on('pointerdown', () => {
+            this.isResetting = false;
             text.destroy();
+            button.destroy();
+            this.scene.restart();
+        });
+
+        // Auto-reinicio después de 3 segundos
+        this.time.delayedCall(3000, () => {
+            if (text && text.active) {
+                text.destroy();
+                button.destroy();
+                this.isResetting = false;
+            }
         });
     }
 

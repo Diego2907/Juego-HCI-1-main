@@ -93,7 +93,9 @@ export const playerConfig = {
  */
 
 export function playerMovement(scene, palabra = null) {
-    const { jugador, keys, sonidoPasos } = scene;
+    const jugador = scene && scene.jugador;
+    const keys = (scene && scene.keys) || {};
+    const sonidoPasos = (scene && scene.sonidoPasos) || { isPlaying: false, play: () => {} };
     const { speed, directions } = playerConfig;
 
     // Determinar la dirección del movimiento
@@ -101,14 +103,14 @@ export function playerMovement(scene, palabra = null) {
     let velocityX = 0;
     let velocityY = 0;
 
-    if (keys.left.isDown || palabra === "izquierda") {
+    if (keys.left?.isDown || palabra === "izquierda") {
         direction = 'izquierda';
         velocityX = -speed * 40;
     } else if (keys.right.isDown || palabra === "derecha") {
         direction = 'derecha';
         velocityX = speed * 40;
     }
-    if (keys.up.isDown || palabra === "arriba") {
+    if (keys.up?.isDown || palabra === "arriba") {
         direction = 'arriba';
         velocityY = -speed * 40;
     } else if (keys.down.isDown || palabra === "abajo") {
@@ -117,20 +119,22 @@ export function playerMovement(scene, palabra = null) {
     }
 
     // Ejecutar movimiento si hay dirección
+    if (!jugador) return; // Si no existe el jugador, nada que hacer
+
     if (direction) {
         const { anim } = directions[direction];
-        // Reproducir animación
-        jugador.anims.play(anim, true);
-        // Mover jugador usando física
-        jugador.body.setVelocity(velocityX, velocityY);
+        // Reproducir animación si está disponible
+        if (jugador.anims && typeof jugador.anims.play === 'function') jugador.anims.play(anim, true);
+        // Mover jugador usando física si el body existe
+        if (jugador.body && typeof jugador.body.setVelocity === 'function') jugador.body.setVelocity(velocityX, velocityY);
         // Reproducir sonido de pasos
-        if (!sonidoPasos.isPlaying) {
+        if (!sonidoPasos.isPlaying && typeof sonidoPasos.play === 'function') {
             sonidoPasos.play();
         }
     } else {
-        // Detener animación cuando no hay movimiento
-        jugador.anims.stop();
-        jugador.setFrame(0);
-        jugador.body.setVelocity(0, 0);
+        // Detener animación cuando no hay movimiento (si existe)
+        if (jugador.anims && typeof jugador.anims.stop === 'function') jugador.anims.stop();
+        if (typeof jugador.setFrame === 'function') jugador.setFrame(0);
+        if (jugador.body && typeof jugador.body.setVelocity === 'function') jugador.body.setVelocity(0, 0);
     }
 }

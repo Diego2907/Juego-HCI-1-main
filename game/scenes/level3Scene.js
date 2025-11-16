@@ -6,7 +6,6 @@ export class Level3Scene extends Phaser.Scene {
     constructor() {
         super({ key: 'Level3Scene' });
         this.level = 3;
-        this.showWallsDebug = true;
     }
 
     preload() {
@@ -26,7 +25,6 @@ export class Level3Scene extends Phaser.Scene {
         this.cameras.main.setBackgroundColor('#8b7355');
         this.walls = this.physics.add.staticGroup();
         buildMaze(this, 'hospitalWall');
-        if (this.showWallsDebug) this.drawWallsDebug();
         this.createPlayer();
         this.createAnimations();
         this.createEnemies();
@@ -48,10 +46,28 @@ export class Level3Scene extends Phaser.Scene {
     }
 
     createPlayer() {
+        // Usar la configuración del nivel para la posición inicial
         const { startPos } = levelConfig;
-        this.jugador = this.add.circle(startPos.x, startPos.y, 15, 0x3498db);
-        this.physics.add.existing(this.jugador);
-        this.jugador.body.setCollideWorldBounds(true);
+
+        // Crear el sprite del jugador (igual que en Level1Scene)
+        this.jugador = this.physics.add.sprite(startPos.x, startPos.y, playerConfig.sprite.key)
+            .setOrigin(playerConfig.origin?.x ?? 0.5, playerConfig.origin?.y ?? 0.5)
+            .setCollideWorldBounds(playerConfig.collideWorldBounds ?? true)
+            .setScale(playerConfig.scale ?? 1);
+
+        // Ajustar el tamaño del cuerpo para evitar que se quede atrapado
+        if (this.jugador.body && this.jugador.width && this.jugador.height) {
+            this.jugador.body.setSize(
+                this.jugador.width * 0.5,
+                this.jugador.height * 0.5
+            );
+            this.jugador.body.setOffset(
+                this.jugador.width * 0.25,
+                this.jugador.height * 0.25
+            );
+        }
+
+        // Sonido de pasos
         this.sonidoPasos = this.sound.add(playerConfig.sound.key, playerConfig.sound.config);
     }
 
@@ -103,20 +119,6 @@ export class Level3Scene extends Phaser.Scene {
         this.keys = this.input.keyboard.createCursorKeys();
     }
 
-    drawWallsDebug() {
-        if (!this.debugGraphics) this.debugGraphics = this.add.graphics();
-        this.debugGraphics.clear();
-        this.debugGraphics.lineStyle(2, 0xff0000, 0.8);
-        this.walls.getChildren().forEach(w => {
-            if (w.getBounds) {
-                const b = w.getBounds();
-                this.debugGraphics.strokeRect(b.x, b.y, b.width, b.height);
-            } else if (w.body) {
-                this.debugGraphics.strokeRect(w.body.x, w.body.y, w.body.width, w.body.height);
-            }
-        });
-    }
-
     update() {
         if (palabra === 'siguiente' && !this.levelCompleted) {
             this.levelCompleted = true;
@@ -140,14 +142,47 @@ export class Level3Scene extends Phaser.Scene {
         jugador.y = startPos.y;
         jugador.body.setVelocity(0, 0);
 
-        const text = this.add.text(400, 300, '¡Te atraparon!', {
-            fontSize: '32px',
-            fill: '#e74c3c',
+        // Crear texto de game over
+        const text = this.add.text(400, 250, '¡Te atraparon!', {
+            fontSize: '40px',
+            fill: '#9d2b1fff',
+            backgroundColor: '#000000',
             fontStyle: 'bold'
-        }).setOrigin(0.5);
+        }).setOrigin(0.5).setScrollFactor(0);
 
-        this.time.delayedCall(1000, () => {
+        // Crear botón de reinicio (correctamente como texto interactivo)
+        const button = this.add.text(400, 320, '¡Ir a inicio!', {
+            fontSize: '28px',
+            fill: '#ffffff',
+            fontStyle: 'bold',
+            backgroundColor: '#3498db',
+            padding: { x: 20, y: 10 }
+        }).setOrigin(0.5).setScrollFactor(2);
+
+        button.setInteractive({ useHandCursor: true });
+
+        button.on('pointerover', () => {
+            button.setStyle({ backgroundColor: '#2980b9' });
+        });
+
+        button.on('pointerout', () => {
+            button.setStyle({ backgroundColor: '#3498db' });
+        });
+
+        button.on('pointerdown', () => {
+            this.isResetting = false;
             text.destroy();
+            button.destroy();
+            this.scene.restart();
+        });
+
+        // Auto-reinicio después de 3 segundos
+        this.time.delayedCall(3000, () => {
+            if (text && text.active) {
+                text.destroy();
+                button.destroy();
+                this.isResetting = false;
+            }
         });
     }
 
