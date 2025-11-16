@@ -225,7 +225,7 @@ export class Level1Scene extends Phaser.Scene {
 
     update() {
 
-        if (palabra === 'siguiente' && !this.levelCompleted) {
+        if (palabra === 'siguiente' && !this.levelCompleted || this.keys.space.isDown ) {
             this.levelCompleted = true;
             this.time.delayedCall(150, () => {
                 this.scene.start('Level3Scene');

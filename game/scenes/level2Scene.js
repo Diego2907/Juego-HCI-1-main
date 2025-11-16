@@ -6,7 +6,7 @@ export class Level2Scene extends Phaser.Scene {
     constructor() {
         super({ key: 'Level2Scene' });
         this.level = 2;
-        this.showWallsDebug = true;
+        // this.showWallsDebug = true;
     }
 
     preload() {
@@ -27,7 +27,7 @@ export class Level2Scene extends Phaser.Scene {
         this.cameras.main.setBackgroundColor('#8b7355');
         this.walls = this.physics.add.staticGroup();
         buildMaze(this, 'hospitalWall');
-        if (this.showWallsDebug) this.drawWallsDebug();
+        // if (this.showWallsDebug) this.drawWallsDebug();
         this.createPlayer();
         this.createAnimations();
         this.createEnemies();
@@ -73,18 +73,18 @@ export class Level2Scene extends Phaser.Scene {
         // Sonido de pasos
         this.sonidoPasos = this.sound.add(playerConfig.sound.key, playerConfig.sound.config);
         
-        //!eliminar -------------------------------------
-        // Gráfico para visualizar la hitbox del jugador
-        this.playerHitbox = this.add.graphics();
-        this.playerHitbox.setDepth(10);
-        if (this.jugador.body) {
-            const b = this.jugador.body;
-            this.playerHitbox.fillStyle(0xffff00, 0.12);
-            this.playerHitbox.fillRect(b.x, b.y, b.width, b.height);
-            this.playerHitbox.lineStyle(2, 0xffff00, 0.9);
-            this.playerHitbox.strokeRect(b.x, b.y, b.width, b.height);
-        }
-        //!eliminar -----------------------------------------
+        // //!eliminar -------------------------------------
+        // // Gráfico para visualizar la hitbox del jugador
+        // this.playerHitbox = this.add.graphics();
+        // this.playerHitbox.setDepth(10);
+        // if (this.jugador.body) {
+        //     const b = this.jugador.body;
+        //     this.playerHitbox.fillStyle(0xffff00, 0.12);
+        //     this.playerHitbox.fillRect(b.x, b.y, b.width, b.height);
+        //     this.playerHitbox.lineStyle(2, 0xffff00, 0.9);
+        //     this.playerHitbox.strokeRect(b.x, b.y, b.width, b.height);
+        // }
+        // //!eliminar -----------------------------------------
     }
 
     createAnimations() {
@@ -135,22 +135,22 @@ export class Level2Scene extends Phaser.Scene {
         this.keys = this.input.keyboard.createCursorKeys();
     }
 
-    drawWallsDebug() {
-        if (!this.debugGraphics) this.debugGraphics = this.add.graphics();
-        this.debugGraphics.clear();
-        this.debugGraphics.lineStyle(2, 0xff0000, 0.8);
-        this.walls.getChildren().forEach(w => {
-            if (w.getBounds) {
-                const b = w.getBounds();
-                this.debugGraphics.strokeRect(b.x, b.y, b.width, b.height);
-            } else if (w.body) {
-                this.debugGraphics.strokeRect(w.body.x, w.body.y, w.body.width, w.body.height);
-            }
-        });
-    }
+    // drawWallsDebug() {
+    //     if (!this.debugGraphics) this.debugGraphics = this.add.graphics();
+    //     this.debugGraphics.clear();
+    //     this.debugGraphics.lineStyle(2, 0xff0000, 0.8);
+    //     this.walls.getChildren().forEach(w => {
+    //         if (w.getBounds) {
+    //             const b = w.getBounds();
+    //             this.debugGraphics.strokeRect(b.x, b.y, b.width, b.height);
+    //         } else if (w.body) {
+    //             this.debugGraphics.strokeRect(w.body.x, w.body.y, w.body.width, w.body.height);
+    //         }
+    //     });
+    // }
 
     update() {
-        if (palabra === 'siguiente' && !this.levelCompleted) {
+        if (palabra === 'siguiente' && !this.levelCompleted || this.keys.space.isDown && !this.levelCompleted) {
             this.levelCompleted = true;
             this.time.delayedCall(150, () => {
                 this.scene.start('Level3Scene');
@@ -161,15 +161,15 @@ export class Level2Scene extends Phaser.Scene {
         // Llamar la función pasando la escena y opcionalmente la palabra
         playerMovement(this, palabra);
 
-        // Actualizar la máscara/hitbox visual para que siga al jugador
-        if (this.playerHitbox && this.jugador && this.jugador.body) {
-            const b = this.jugador.body;
-            this.playerHitbox.clear();
-            this.playerHitbox.fillStyle(0xffff00, 0.12);
-            this.playerHitbox.fillRect(b.x, b.y, b.width, b.height);
-            this.playerHitbox.lineStyle(2, 0xffff00, 0.9);
-            this.playerHitbox.strokeRect(b.x, b.y, b.width, b.height);
-        }
+        // // Actualizar la máscara/hitbox visual para que siga al jugador
+        // if (this.playerHitbox && this.jugador && this.jugador.body) {
+        //     const b = this.jugador.body;
+        //     this.playerHitbox.clear();
+        //     this.playerHitbox.fillStyle(0xffff00, 0.12);
+        //     this.playerHitbox.fillRect(b.x, b.y, b.width, b.height);
+        //     this.playerHitbox.lineStyle(2, 0xffff00, 0.9);
+        //     this.playerHitbox.strokeRect(b.x, b.y, b.width, b.height);
+        // }
         
         this.enemies.forEach(enemy => {
             const angle = Phaser.Math.Angle.Between(enemy.x, enemy.y, this.jugador.x, this.jugador.y);

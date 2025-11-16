@@ -61,18 +61,7 @@ export class FirstRoomScene extends Phaser.Scene {
             playerConfig.sound.config
         );
 
-        //!eliminar -------------------------------------
-        // Gráfico para visualizar la hitbox del jugador
-        this.playerHitbox = this.add.graphics();
-        this.playerHitbox.setDepth(10);
-        if (this.jugador.body) {
-            const b = this.jugador.body;
-            this.playerHitbox.fillStyle(0xffff00, 0.12);
-            this.playerHitbox.fillRect(b.x, b.y, b.width, b.height);
-            this.playerHitbox.lineStyle(2, 0xffff00, 0.9);
-            this.playerHitbox.strokeRect(b.x, b.y, b.width, b.height);
-        }
-        //!eliminar -----------------------------------------
+
     }
 
     createAnimations() {
@@ -98,7 +87,7 @@ export class FirstRoomScene extends Phaser.Scene {
     }
 
     update() {
-        if (palabra === 'inicio' && !this.completionTriggered) {
+        if (palabra === 'inicio' || this.keys.space.isDown) {
             this.completionTriggered = true;
             this.time.delayedCall(150, () => {
                 this.scene.start('Level1Scene');
