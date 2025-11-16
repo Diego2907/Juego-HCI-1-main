@@ -98,27 +98,31 @@ export function playerMovement(scene, palabra = null) {
 
     // Determinar la dirección del movimiento
     let direction = null;
-    
+    let velocityX = 0;
+    let velocityY = 0;
+
     if (keys.left.isDown || palabra === "izquierda") {
         direction = 'izquierda';
+        velocityX = -speed * 40;
     } else if (keys.right.isDown || palabra === "derecha") {
         direction = 'derecha';
-    } else if (keys.up.isDown || palabra === "arriba") {
+        velocityX = speed * 40;
+    }
+    if (keys.up.isDown || palabra === "arriba") {
         direction = 'arriba';
+        velocityY = -speed * 40;
     } else if (keys.down.isDown || palabra === "abajo") {
         direction = 'abajo';
+        velocityY = speed * 40;
     }
 
     // Ejecutar movimiento si hay dirección
     if (direction) {
-        const { anim, axis, delta } = directions[direction];
-        
+        const { anim } = directions[direction];
         // Reproducir animación
         jugador.anims.play(anim, true);
-        
-        // Mover jugador
-        jugador[axis] += delta * speed;
-        
+        // Mover jugador usando física
+        jugador.body.setVelocity(velocityX, velocityY);
         // Reproducir sonido de pasos
         if (!sonidoPasos.isPlaying) {
             sonidoPasos.play();
@@ -127,5 +131,6 @@ export function playerMovement(scene, palabra = null) {
         // Detener animación cuando no hay movimiento
         jugador.anims.stop();
         jugador.setFrame(0);
+        jugador.body.setVelocity(0, 0);
     }
 }
