@@ -1,6 +1,6 @@
 import { palabra } from '../../Control-de-voz.js';
 import { level1SceneConfig } from '../config/level1Scene.config.js';
-import { mazesConfig, levelConfig , buildMaze} from '../config/mazes.config.js';
+import { mazesConfig, levelConfig, buildMaze } from '../config/mazes.config.js';
 import { playerConfig, playerMovement } from '../config/player.config.js';
 
 export class Level1Scene extends Phaser.Scene {
@@ -20,7 +20,7 @@ export class Level1Scene extends Phaser.Scene {
             playerConfig.sound.path
         );
 
-        this.load.image('hospitalWall', './Assets/Background/Tile_07.png');
+        this.load.image('hospitalWall', './Assets/Background/wall.png');
     }
 
     create() {
@@ -66,14 +66,8 @@ export class Level1Scene extends Phaser.Scene {
         if (this.goal) {
             this.physics.add.overlap(this.jugador, this.goal, this.reachGoal, null, this);
         }
-
-        // this.buildMaze(hospitalWall);
     }
-
-    // (Removed local commented buildMaze implementation — using shared function from config.)
-
     
-
     createPlayer() {
         // Usar la configuración del nivel para la posición inicial
         const { startPos } = levelConfig;
@@ -98,19 +92,6 @@ export class Level1Scene extends Phaser.Scene {
 
         // Sonido de pasos
         this.sonidoPasos = this.sound.add(playerConfig.sound.key, playerConfig.sound.config);
-
-        //!eliminar -------------------------------------
-        // Gráfico para visualizar la hitbox del jugador
-        this.playerHitbox = this.add.graphics();
-        this.playerHitbox.setDepth(10);
-        if (this.jugador.body) {
-            const b = this.jugador.body;
-            this.playerHitbox.fillStyle(0xffff00, 0.12);
-            this.playerHitbox.fillRect(b.x, b.y, b.width, b.height);
-            this.playerHitbox.lineStyle(2, 0xffff00, 0.9);
-            this.playerHitbox.strokeRect(b.x, b.y, b.width, b.height);
-        }
-        //!eliminar -----------------------------------------
     }
 
     createAnimations() {
@@ -250,17 +231,6 @@ export class Level1Scene extends Phaser.Scene {
             });
             return;
         }
-        //!ELININAR----------------------------------------------------------
-        // Actualizar la máscara/hitbox visual para que siga al jugador
-        if (this.playerHitbox && this.jugador && this.jugador.body) {
-            const b = this.jugador.body;
-            this.playerHitbox.clear();
-            this.playerHitbox.fillStyle(0xffff00, 0.12);
-            this.playerHitbox.fillRect(b.x, b.y, b.width, b.height);
-            this.playerHitbox.lineStyle(2, 0xffff00, 0.9);
-            this.playerHitbox.strokeRect(b.x, b.y, b.width, b.height);
-        }
-        //!-------------------------------------------------------------------
         // Solo actualizar si el nivel no está completado y no estamos reseteando
         if (!this.levelCompleted && !this.isResetting) {
             // Llamar la función pasando la escena y opcionalmente la palabra
