@@ -35,7 +35,8 @@ export class Level2Scene extends Phaser.Scene {
 
         this.levelText = this.add.text(16, 16, `Nivel: ${this.level}`, {
             fontSize: '24px',
-            fill: '#fff',
+            fill: '#000000',
+            backgroundColor: '#ffffff',
             fontStyle: 'bold'
         });
 

@@ -51,7 +51,8 @@ export class Level1Scene extends Phaser.Scene {
         // Texto del nivel
         this.levelText = this.add.text(16, 16, `Nivel: ${this.level}`, {
             fontSize: '24px',
-            fill: '#fff',
+            fill: '#000000',
+            backgroundColor: '#ffffff',
             fontStyle: 'bold'
         });
 
@@ -67,7 +68,7 @@ export class Level1Scene extends Phaser.Scene {
             this.physics.add.overlap(this.jugador, this.goal, this.reachGoal, null, this);
         }
     }
-    
+
     createPlayer() {
         // Usar la configuración del nivel para la posición inicial
         const { startPos } = levelConfig;
