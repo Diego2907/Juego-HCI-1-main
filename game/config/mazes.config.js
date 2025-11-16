@@ -78,6 +78,12 @@ export function buildMaze(scene, wallImage, level) {
                 scene.physics.add.existing(wall, true);
                 scene.walls.add(wall);
 
+            } else if (maze[row][col] === 0) {
+                // Create ground sprite for empty spaces
+                const ground = scene.add.image(x, y, 'ground');
+                ground.displayWidth = tileSize;
+                ground.displayHeight = tileSize;
+
             } else if (maze[row][col] === 2) {
                 // Goal
                 scene.goal = scene.add.circle(x, y, 20, 0x2ecc71);

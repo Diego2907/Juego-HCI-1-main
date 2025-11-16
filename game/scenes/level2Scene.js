@@ -21,6 +21,7 @@ export class Level2Scene extends Phaser.Scene {
         );
 
         this.load.image('hospitalWall', './Assets/Background/wall.png');
+        this.load.image('ground', './Assets/Background/ground.png');
     }
 
     create() {

@@ -19,6 +19,7 @@ export class Level3Scene extends Phaser.Scene {
             playerConfig.sound.path
         );
         this.load.image('hospitalWall', './Assets/Background/wall.png');
+        this.load.image('ground', './Assets/Background/ground.png');
     }
 
     create() {
@@ -136,7 +137,7 @@ export class Level3Scene extends Phaser.Scene {
         });
     }
 
-    hitEnemy(jugador, enemy) {
+    hitEnemy(jugador) {
         const { startPos } = levelConfig;
         jugador.x = startPos.x;
         jugador.y = startPos.y;
