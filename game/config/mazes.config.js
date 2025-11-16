@@ -47,7 +47,7 @@ export const levelConfig = {
     playerSpeed: 200,
     enemySpeedBase: 80,
     enemySpeedIncrement: 20,
-    startPos: { x: 50, y: 50 }
+    startPos: { x: 50, y: 120}
 };
 
 export function buildMaze(scene, wallImage, level) {

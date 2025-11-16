@@ -1,5 +1,5 @@
 import { palabra } from '../../Control-de-voz.js';
-import { mazesConfig, levelConfig } from '../config/mazes.config.js';
+import { mazesConfig, levelConfig, buildMaze } from '../config/mazes.config.js';
 import { playerConfig, playerMovement } from '../config/player.config.js';
 
 export class Level3Scene extends Phaser.Scene {
@@ -19,12 +19,13 @@ export class Level3Scene extends Phaser.Scene {
             playerConfig.sound.key,
             playerConfig.sound.path
         );
+        this.load.image('hospitalWall', './Assets/Background/wall.png');
     }
 
     create() {
         this.cameras.main.setBackgroundColor('#8b7355');
         this.walls = this.physics.add.staticGroup();
-        this.buildMaze();
+        buildMaze(this, 'hospitalWall');
         if (this.showWallsDebug) this.drawWallsDebug();
         this.createPlayer();
         this.createAnimations();
@@ -43,28 +44,6 @@ export class Level3Scene extends Phaser.Scene {
             this.physics.add.overlap(this.jugador, enemy, this.hitEnemy, null, this);
         });
         this.physics.add.overlap(this.jugador, this.goal, this.reachGoal, null, this);
-    }
-
-    buildMaze() {
-        const maze = mazesConfig[this.level];
-        const { tileSize } = levelConfig;
-
-        for (let row = 0; row < maze.length; row++) {
-            for (let col = 0; col < maze[row].length; col++) {
-                const x = col * tileSize + tileSize / 2;
-                const y = row * tileSize + tileSize / 2;
-
-                if (maze[row][col] === 1) {
-                    const wall = this.add.rectangle(x, y, tileSize, tileSize, 0x34495e).setOrigin(0.5);
-                    this.physics.add.existing(wall, true);
-                    if (wall.body && wall.body.setSize) wall.body.setSize(tileSize, tileSize);
-                    this.walls.add(wall);
-                } else if (maze[row][col] === 2) {
-                    this.goal = this.add.circle(x, y, 20, 0x2ecc71);
-                    this.physics.add.existing(this.goal, true);
-                }
-            }
-        }
     }
 
     createPlayer() {
