@@ -266,6 +266,17 @@ export class Level1Scene extends Phaser.Scene {
             });
             return;
         }
+        //!ELININAR----------------------------------------------------------
+         // Actualizar la máscara/hitbox visual para que siga al jugador
+        if (this.playerHitbox && this.jugador && this.jugador.body) {
+            const b = this.jugador.body;
+            this.playerHitbox.clear();
+            this.playerHitbox.fillStyle(0xffff00, 0.12);
+            this.playerHitbox.fillRect(b.x, b.y, b.width, b.height);
+            this.playerHitbox.lineStyle(2, 0xffff00, 0.9);
+            this.playerHitbox.strokeRect(b.x, b.y, b.width, b.height);
+        }
+        //!-------------------------------------------------------------------
         // Solo actualizar si el nivel no está completado y no estamos reseteando
         if (!this.levelCompleted && !this.isResetting) {
             // Llamar la función pasando la escena y opcionalmente la palabra

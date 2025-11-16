@@ -60,6 +60,19 @@ export class FirstRoomScene extends Phaser.Scene {
             playerConfig.sound.key,
             playerConfig.sound.config
         );
+
+        //!eliminar -------------------------------------
+        // Gráfico para visualizar la hitbox del jugador
+        this.playerHitbox = this.add.graphics();
+        this.playerHitbox.setDepth(10);
+        if (this.jugador.body) {
+            const b = this.jugador.body;
+            this.playerHitbox.fillStyle(0xffff00, 0.12);
+            this.playerHitbox.fillRect(b.x, b.y, b.width, b.height);
+            this.playerHitbox.lineStyle(2, 0xffff00, 0.9);
+            this.playerHitbox.strokeRect(b.x, b.y, b.width, b.height);
+        }
+        //!eliminar -----------------------------------------
     }
 
     createAnimations() {

@@ -190,6 +190,7 @@ export class Level2Scene extends Phaser.Scene {
             this.playerHitbox.lineStyle(2, 0xffff00, 0.9);
             this.playerHitbox.strokeRect(b.x, b.y, b.width, b.height);
         }
+        
         this.enemies.forEach(enemy => {
             const angle = Phaser.Math.Angle.Between(enemy.x, enemy.y, this.jugador.x, this.jugador.y);
             enemy.body.setVelocity(Math.cos(angle) * enemy.speed, Math.sin(angle) * enemy.speed);

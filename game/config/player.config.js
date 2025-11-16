@@ -3,8 +3,8 @@ export const playerConfig = {
         key: 'jugador',
         path: '../Assets/Personaje principal/Personaje_caminando.png',
         frameConfig: {
-            frameWidth: 64,
-            frameHeight: 64
+            frameWidth: 113/7, //? 113 los pixeles de ancho de la imagen divididos en 7 frames
+            frameHeight: 216/7 //? 216 los pixeles de alto de la imagen divididos en 7 frames 
         }
     },
     defaultPosition: {
@@ -17,28 +17,30 @@ export const playerConfig = {
     animations: {
         'jugador-camina-abajo': {
             start: 0,
-            end: 5,
+            end: 6,
             frameRate: 17,
             repeat: 1
         },
         'jugador-camina-derecha': {
-            start: 12,
-            end: 17,
+            start: 28,
+            end: 34,
             frameRate: 17,
             repeat: 1
         },
         'jugador-camina-izquierda': {
-            start: 6,
-            end: 11,
+            start: 14,
+            end: 20,
             frameRate: 17,
             repeat: 1
         },
         'jugador-camina-arriba': {
-            start: 18,
-            end: 23,
+            start: 42,
+            end:48,
             frameRate: 17,
             repeat: 1
         }
+
+        //?Tamaño de la imagen 113px x 216px
     },
     sound: {
         key: 'pasosJugador',
