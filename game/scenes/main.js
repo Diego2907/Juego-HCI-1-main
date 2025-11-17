@@ -1,4 +1,6 @@
 import { MenuScene } from "./menuScene.js";
+import { IntroScene } from "./IntroScene.js";
+import { IntroScene2 } from "./IntroScene2.js";
 import { FirstRoomScene } from "./firstRoomScene.js";
 import { Level1Scene } from "./level1Scene.js";
 import { Level2Scene } from "./level2Scene.js";
@@ -9,7 +11,7 @@ const config = {
   type: Phaser.AUTO,
   width: display.width,
   height: display.height,
-  scene: [MenuScene, FirstRoomScene, Level1Scene, Level2Scene, Level3Scene],
+  scene: [MenuScene, IntroScene, IntroScene2, FirstRoomScene, Level1Scene, Level2Scene, Level3Scene],
   physics: {
     default: "arcade"
   },

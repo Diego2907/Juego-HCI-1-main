@@ -19,7 +19,7 @@ export class MenuScene extends Phaser.Scene {
 
     buttonStart.on("pointerdown", () => {
       console.log("Clickeaste el boton");
-      this.scene.start("FirstRoomScene");
+      this.scene.start("IntroScene");
     });
   }
 }
