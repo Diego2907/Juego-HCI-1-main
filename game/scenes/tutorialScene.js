@@ -1,6 +1,6 @@
-export class IntroScene2 extends Phaser.Scene {
+export class TutorialScene extends Phaser.Scene {
   constructor() {
-    super({ key: "IntroScene2" });
+    super({ key: "TutorialScene" });
   }
 
   preload() {
@@ -8,28 +8,31 @@ export class IntroScene2 extends Phaser.Scene {
       "siguienteButton",
       "../assets/IntroScene/siguienteBoton.png"
     );
+    this.load.image(
+      "teclas",
+      "../assets/IntroScene/teclas.png"
+    );
 
     this.load.audio(
-      "historia",
-      "../assets/sounds/IntroScene/Historia.mp3"
+      "tutorialAudio",
+      "../assets/sounds/IntroScene/tutorial.mp3"
     );
   }
 
   create() {
     let fullText = `
-      El hospital es un caos. El experimento... 
-      se salió de control. La inyección convirtió a las ratas 
-      en gigantescas bestias hambrientas. ¡Se están comiendo 
-      a los científicos! Los gritos resuenan en los pasillos. 
-      Tienes que encontrar a alguien... 
-      ¡quien sea! ¡Busca una salida y sal de aquí AHORA!
+      Pero antes, debes saber cómo moverte por aquí. 
+      Presiona las teclas (arriba, abajo, izquierda, derecha) 
+      para moverte por los pasillos. 
+      También puedes decir las palabras de las teclas 
+      para moverte... ¡Mucha suerte!
     `;
     let displayedText = "";
     let index = 0;
 
     let texto = this.add.text(100, 100, "", { fontSize: "32px", fill: "#fff" });
 
-    this.narracionIntro2 = this.sound.add("historia");
+    this.narracionIntro2 = this.sound.add("tutorialAudio");
 
     this.time.addEvent({
       delay: 50,
@@ -48,18 +51,24 @@ export class IntroScene2 extends Phaser.Scene {
       repeat: fullText.length - 1,
     });
 
+    // this.add.image(700, 400, "mochila").setDisplaySize(280, 150);
+
     this.time.addEvent({
       //Agregar el boton de manera progresiva
-      delay: 10000,
+      delay: 5000,
       callback: () => {
         let siguienteButton = this.add
           .image(750, 600, "siguienteButton")
           .setDisplaySize(280, 150)
           .setInteractive({ cursor: "pointer" });
 
+        this.add
+          .image(750, 600, "teclas")
+          .setDisplaySize(300, 150)
+          .setOrigin(0.5, 2);
+
         siguienteButton.on("pointerdown", () => {
-          this.scene.start("TutorialScene");
-          console.log("Boton clickeado");
+          this.scene.start("FirstRoomScene");   
         });
       },
     });
