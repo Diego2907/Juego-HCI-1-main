@@ -1,6 +1,7 @@
 import { palabra } from '../../Control-de-voz.js';
 import { mazesConfig, levelConfig, buildMaze } from '../config/mazes.config.js';
 import { playerConfig, playerMovement } from '../config/player.config.js';
+import { enemyConfig, createEnemies, enemyMovement } from '../config/enemy.config.js';
 
 export class Level3Scene extends Phaser.Scene {
     constructor() {
@@ -13,6 +14,11 @@ export class Level3Scene extends Phaser.Scene {
             playerConfig.sprite.key,
             playerConfig.sprite.path,
             playerConfig.sprite.frameConfig
+        );
+        this.load.spritesheet(
+            enemyConfig.sprite.key,
+            enemyConfig.sprite.path,
+            enemyConfig.sprite.frameConfig
         );
         this.load.audio(
             playerConfig.sound.key,
@@ -73,6 +79,7 @@ export class Level3Scene extends Phaser.Scene {
     }
 
     createAnimations() {
+        // Crear animaciones del jugador
         Object.entries(playerConfig.animations).forEach(([key, anim]) => {
             if (!this.anims.exists(key)) {
                 this.anims.create({
@@ -83,37 +90,28 @@ export class Level3Scene extends Phaser.Scene {
                 });
             }
         });
+
+        // Crear animaciones de enemigos
+        Object.entries(enemyConfig.animations).forEach(([key, anim]) => {
+            if (!this.anims.exists(key)) {
+                this.anims.create({
+                    key: key,
+                    frames: this.anims.generateFrameNumbers(
+                        enemyConfig.sprite.key,
+                        { start: anim.start, end: anim.end }
+                    ),
+                    frameRate: anim.frameRate,
+                    repeat: anim.repeat
+                });
+            }
+        });
     }
 
     createEnemies() {
-        this.enemies = [];
-        const { startPos, enemySpeedBase, enemySpeedIncrement } = levelConfig;
-
-        for (let i = 0; i < this.level; i++) {
-            let validPosition = false;
-            let x, y;
-
-            while (!validPosition) {
-                x = Phaser.Math.Between(100, 700);
-                y = Phaser.Math.Between(100, 500);
-                const distance = Phaser.Math.Distance.Between(x, y, startPos.x, startPos.y);
-
-                const testCircle = this.add.circle(x, y, 12);
-                this.physics.add.existing(testCircle);
-                const overlapping = this.physics.overlap(testCircle, this.walls);
-                testCircle.destroy();
-
-                if (!overlapping && distance > 150) {
-                    validPosition = true;
-                }
-            }
-
-            const enemy = this.add.circle(x, y, 12, 0xe74c3c);
-            this.physics.add.existing(enemy);
-            enemy.body.setCollideWorldBounds(true);
-            enemy.speed = enemySpeedBase + (this.level * enemySpeedIncrement);
-            this.enemies.push(enemy);
-        }
+        // Pasar la configuración de startPos a la escena
+        this.startPos = levelConfig.startPos;
+        // Usar la función de createEnemies del config
+        createEnemies(this, this.level);
     }
 
     createControls() {
@@ -131,9 +129,9 @@ export class Level3Scene extends Phaser.Scene {
         // Llamar la función pasando la escena y opcionalmente la palabra
         playerMovement(this, palabra);
 
+        // Movimiento de enemigos (persiguen al jugador)
         this.enemies.forEach(enemy => {
-            const angle = Phaser.Math.Angle.Between(enemy.x, enemy.y, this.jugador.x, this.jugador.y);
-            enemy.body.setVelocity(Math.cos(angle) * enemy.speed, Math.sin(angle) * enemy.speed);
+            enemyMovement(this, enemy, this.jugador);
         });
     }
 
