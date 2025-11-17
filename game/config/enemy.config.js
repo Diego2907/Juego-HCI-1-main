@@ -17,12 +17,6 @@ export const enemyConfig = {
             frameRate: 17,
             repeat: -1
         },
-        'rata-camina-derecha': {
-            start: 16,
-            end: 19,
-            frameRate: 17,
-            repeat: -1
-        },
         'rata-camina-izquierda': {
             start: 64,
             end: 69,
@@ -121,13 +115,29 @@ export function enemyMovement(scene, enemy, target) {
         direction = dx > 0 ? 'derecha' : 'izquierda';
     }
 
-    // Reproducir animación
-    const animKey = {
-        'derecha': 'rata-camina-derecha',
-        'izquierda': 'rata-camina-izquierda',
-        'arriba': 'rata-camina-arriba',
-        'abajo': 'rata-camina-abajo'
-    }[direction];
+    let animKey;
+
+    switch (direction) {
+        case 'izquierda':
+            animKey = 'rata-camina-izquierda';
+            enemy.setFlipX(false); // Nos aseguramos que no esté volteado
+            break;
+            
+        case 'derecha':
+            animKey = 'rata-camina-izquierda'; // <<< ¡Usamos la anim de la izquierda!
+            enemy.setFlipX(true);  // <<< ¡Y la volteamos horizontalmente!
+            break;
+            
+        case 'arriba':
+            animKey = 'rata-camina-arriba';
+            enemy.setFlipX(false); // Reseteamos el flip
+            break;
+            
+        case 'abajo':
+            animKey = 'rata-camina-abajo';
+            enemy.setFlipX(false); // Reseteamos el flip
+            break;
+    }
 
     if (enemy.anims && typeof enemy.anims.play === 'function') {
         enemy.anims.play(animKey, true);
