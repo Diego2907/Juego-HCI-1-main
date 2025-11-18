@@ -1,7 +1,9 @@
+import { getPalabra, clearPalabra } from "../../Control-de-voz.js";
 export class TutorialScene extends Phaser.Scene {
   constructor() {
     super({ key: "TutorialScene" });
   }
+
 
   preload() {
     this.load.image(
@@ -20,7 +22,7 @@ export class TutorialScene extends Phaser.Scene {
   }
 
   create() {
-    let fullText = `
+    const fullText = `
       Pero antes, debes saber cómo moverte por aquí. 
       Presiona las teclas (arriba, abajo, izquierda, derecha) 
       para moverte por los pasillos. 
@@ -30,7 +32,7 @@ export class TutorialScene extends Phaser.Scene {
     let displayedText = "";
     let index = 0;
 
-    let texto = this.add.text(100, 100, "", { fontSize: "32px", fill: "#fff" });
+    const texto = this.add.text(100, 100, "", { fontSize: "32px", fill: "#fff" });
 
     this.narracionIntro2 = this.sound.add("tutorialAudio");
 
@@ -38,26 +40,23 @@ export class TutorialScene extends Phaser.Scene {
       delay: 50,
       callback: () => {
         if (index === 0) {
-          this.narracionIntro2.play({
-            loop: false,
-            volume: 0.5,
-          });
+          this.narracionIntro2.play({ loop: false, volume: 0.5 });
         }
 
-        displayedText += fullText[index];
-        texto.setText(displayedText);
-        index++;
+        if (index < fullText.length) {
+          displayedText += fullText[index];
+          texto.setText(displayedText);
+          index++;
+        }
       },
       repeat: fullText.length - 1,
     });
 
-    // this.add.image(700, 400, "mochila").setDisplaySize(280, 150);
-
     this.time.addEvent({
-      //Agregar el boton de manera progresiva
+      // Agregar el boton de manera progresiva
       delay: 5000,
       callback: () => {
-        let siguienteButton = this.add
+        const siguienteButton = this.add
           .image(750, 600, "siguienteButton")
           .setDisplaySize(280, 150)
           .setInteractive({ cursor: "pointer" });
@@ -68,9 +67,19 @@ export class TutorialScene extends Phaser.Scene {
           .setOrigin(0.5, 2);
 
         siguienteButton.on("pointerdown", () => {
-          this.scene.start("FirstRoomScene");   
+          this.scene.start("FirstRoomScene");
         });
       },
+      loop: false,
     });
+
+    this.keys = this.input.keyboard.createCursorKeys();
+}
+
+  update() {
+    if (getPalabra() === 'siguiente' || (this.keys && this.keys.space.isDown)) {
+      this.scene.start('FirstRoomScene');
+      clearPalabra();
+    }
   }
 }

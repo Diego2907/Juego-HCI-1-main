@@ -33,3 +33,12 @@ document.getElementById("StopBtn").addEventListener("click", () => {
 });
 
 export { palabra };
+
+// Helper functions to access/modify the palabra from other modules
+export function getPalabra() {
+    return palabra;
+}
+
+export function clearPalabra() {
+    palabra = '';
+}

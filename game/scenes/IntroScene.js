@@ -1,3 +1,5 @@
+import { getPalabra, clearPalabra } from "../../Control-de-voz.js";
+
 export class IntroScene extends Phaser.Scene {
   constructor() {
     super({ key: "IntroScene" });
@@ -68,5 +70,12 @@ export class IntroScene extends Phaser.Scene {
         });
       },
     });
+  }
+
+   update() {
+    if (getPalabra() === 'siguiente') {
+      this.scene.start('IntroScene2');
+      clearPalabra();
+    }
   }
 }

@@ -1,4 +1,4 @@
-import { palabra } from '../../Control-de-voz.js';
+import { getPalabra, clearPalabra } from '../../Control-de-voz.js';
 import { mazesConfig, levelConfig, buildMaze } from '../config/mazes.config.js';
 import { playerConfig, playerMovement } from '../config/player.config.js';
 import { enemyConfig, createEnemies, enemyMovement } from '../config/enemy.config.js';
@@ -31,7 +31,7 @@ export class Level2Scene extends Phaser.Scene {
     }
 
     create() {
-        this.cameras.main.setBackgroundColor('#8b7355');
+        this.cameras.main.setBackgroundColor('#000000');
         this.walls = this.physics.add.staticGroup();
         buildMaze(this, 'hospitalWall');
         // if (this.showWallsDebug) this.drawWallsDebug();
@@ -149,16 +149,17 @@ export class Level2Scene extends Phaser.Scene {
     // }
 
     update() {
-        if (palabra === 'siguiente' && !this.levelCompleted || this.keys.space.isDown && !this.levelCompleted) {
+        if (getPalabra() === 'siguiente' && !this.levelCompleted || this.keys.space.isDown && !this.levelCompleted) {
             this.levelCompleted = true;
             this.time.delayedCall(150, () => {
                 this.scene.start('Level3Scene');
             });
+            clearPalabra();
             return;
         }
 
         // Llamar la función pasando la escena y opcionalmente la palabra
-        playerMovement(this, palabra);
+        playerMovement(this, getPalabra());
 
         // Movimiento de enemigos (persiguen al jugador)
         this.enemies.forEach(enemy => {

@@ -1,4 +1,4 @@
-import { palabra } from '../../Control-de-voz.js';
+import { getPalabra, clearPalabra } from '../../Control-de-voz.js';
 import { firstRoomConfig } from '../config/firstRoomScene.config.js';
 import { playerConfig, playerMovement } from '../config/player.config.js';
 
@@ -28,6 +28,7 @@ export class FirstRoomScene extends Phaser.Scene {
         this.createPlayer();
         this.createAnimations();
         this.createControls();
+        this.createInstructions();
         this.completionTriggered = false;
     }
 
@@ -86,16 +87,26 @@ export class FirstRoomScene extends Phaser.Scene {
         this.keys = this.input.keyboard.createCursorKeys();
     }
 
+    createInstructions() {
+        this.add.text(400, 450, 'Presiona la tecla [Espacio] para jugar, o di la palabra "Inicio"', {
+            fontSize: '20px',
+            fill: '#ffffff',
+            align: 'center',
+            fontStyle: 'bold'
+        }).setOrigin(0.5);
+    }
+
     update() {
-        if (palabra === 'inicio' || this.keys.space.isDown) {
+        if (getPalabra() === 'inicio' || this.keys.space.isDown) {
             this.completionTriggered = true;
             this.time.delayedCall(150, () => {
                 this.scene.start('Level1Scene');
             });
+            clearPalabra();
             return;
         }
         // Llamar la función pasando la escena y opcionalmente la palabra
-        playerMovement(this, palabra);
+        playerMovement(this, getPalabra());
          
     }
 }

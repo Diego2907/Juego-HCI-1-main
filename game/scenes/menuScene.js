@@ -1,3 +1,5 @@
+import { getPalabra, clearPalabra } from "../../Control-de-voz.js";
+
 export class MenuScene extends Phaser.Scene {
   constructor() {
     super({ key: "MenuScene" });
@@ -5,7 +7,7 @@ export class MenuScene extends Phaser.Scene {
 
   preload() {
     this.load.image("background", "./Assets/Background/MenuPrincipal.jpg");
-    this.load.image("buttonStart", "./Assets/Background/buttonStart.png");
+    this.load.image("buttonStart", "./Assets/Background/buttonIniciar.png");
   }
 
   create() {
@@ -21,5 +23,12 @@ export class MenuScene extends Phaser.Scene {
       console.log("Clickeaste el boton");
       this.scene.start("IntroScene");
     });
+  }
+
+  update() {
+    if (getPalabra() === 'iniciar') {
+      this.scene.start('IntroScene');
+      clearPalabra();
+    }
   }
 }

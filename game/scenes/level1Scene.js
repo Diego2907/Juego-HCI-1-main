@@ -1,4 +1,4 @@
-import { palabra } from '../../Control-de-voz.js';
+import { getPalabra, clearPalabra } from '../../Control-de-voz.js';
 import { level1SceneConfig } from '../config/level1Scene.config.js';
 import { mazesConfig, levelConfig, buildMaze } from '../config/mazes.config.js';
 import { playerConfig, playerMovement } from '../config/player.config.js';
@@ -35,7 +35,7 @@ export class Level1Scene extends Phaser.Scene {
         this.levelCompleted = false;
 
         // Fondo del nivel
-        this.cameras.main.setBackgroundColor('#8b7355');
+        this.cameras.main.setBackgroundColor('#000000');
 
         // Crear grupo de paredes
         this.walls = this.physics.add.staticGroup();
@@ -222,17 +222,18 @@ export class Level1Scene extends Phaser.Scene {
 
     update() {
 
-        if (palabra === 'siguiente' && !this.levelCompleted || this.keys.space.isDown ) {
+        if (getPalabra() === 'siguiente' && !this.levelCompleted || this.keys.space.isDown ) {
             this.levelCompleted = true;
             this.time.delayedCall(150, () => {
                 this.scene.start('Level2Scene');
             });
+            clearPalabra();
             return;
         }
         // Solo actualizar si el nivel no está completado y no estamos reseteando
         if (!this.levelCompleted && !this.isResetting) {
             // Llamar la función pasando la escena y opcionalmente la palabra
-            playerMovement(this, palabra);
+            playerMovement(this, getPalabra());
 
             // Movimiento de enemigos (persiguen al jugador)
             this.enemies.forEach(enemy => {
